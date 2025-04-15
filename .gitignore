@@ -24,3 +24,9 @@ env/
 *.log
 *.sqlite3
 *.db
+.env
+node_modules/
+package*.json
+poetry.lock
+pyproject.toml
+src/
