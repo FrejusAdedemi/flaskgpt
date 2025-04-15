@@ -1,0 +1,26 @@
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+
+# 🐍 Environnement virtuel
+venv/
+env/
+.venv/
+
+# 🔐 Variables d'environnement
+.env
+*.env
+
+# ⚙️ Éditeurs & OS
+.DS_Store
+.idea/
+.vscode/
+
+# 📦 Fichiers inutiles
+*.log
+*.sqlite3
+*.db
