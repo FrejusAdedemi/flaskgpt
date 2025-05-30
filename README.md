@@ -3,6 +3,7 @@
 Une mini app de chat en Python avec Flask + OpenAI (GPT-3.5)  
 💬 Interface simple + streaming de réponses via l’API OpenAI
 
+---
 
 ## ⚙️ Technologies utilisées
 
@@ -12,9 +13,8 @@ Une mini app de chat en Python avec Flask + OpenAI (GPT-3.5)
 - python-dotenv
 - Tailwind CSS (via CDN)
 - Render (pour le déploiement)
-  
-🚀 [Voir la démo en ligne](https://flaskgpt-1dku.onrender.com)
 
+🚀 [Voir la démo en ligne](https://flaskgpt-1dku.onrender.com)
 
 ---
 
@@ -25,6 +25,7 @@ Une mini app de chat en Python avec Flask + OpenAI (GPT-3.5)
 ```bash
 git clone https://github.com/ton-utilisateur/flaskgpt.git
 cd flaskgpt
+```
 
 ### 2. Créer un environnement virtuel
 
@@ -32,25 +33,33 @@ cd flaskgpt
 python -m venv .venv
 source .venv/bin/activate  # sur Mac/Linux
 .venv\Scripts\activate     # sur Windows
+```
 
 ### 3. Installer les dépendances
 
 ```bash
 pip install -r requirements.txt
+```
 
 ### 4. Ajouter ta clé OpenAI
-Crée un fichier .env à la racine :
+
+Crée un fichier `.env` à la racine avec le contenu suivant :
 
 ```env
-OPENAI_API_KEY=sk-xxxxxx...
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
 
-### 5. Lancer l'app
+### 5. Lancer l'application
 
 ```bash
 python app.py
-Puis ouvrir http://localhost:5000 dans ton navigateur.
+```
 
+Puis ouvre ton navigateur sur : [http://localhost:5000](http://localhost:5000)
 
+---
 
+## 🙌 Crédit
 
-
+Projet développé pour l'apprentissage.  
+Par [Fréjus Adedemi]
