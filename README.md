@@ -61,5 +61,4 @@ Puis ouvre ton navigateur sur : [http://localhost:5000](http://localhost:5000)
 
 ## 🙌 Crédit
 
-Projet développé pour l'apprentissage.  
-Par [Fréjus Adedemi]
+Projet développé pour l'apprentissage par Fréjus Adedemi
