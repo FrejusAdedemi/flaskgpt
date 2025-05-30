@@ -14,7 +14,7 @@ Une mini app de chat en Python avec Flask + OpenAI (GPT-3.5)
 - Render (pour le déploiement)
 
   
-👉 **Démo en ligne : [https://flaskgpt.onrender.com](https://flaskgpt.onrender.com)** ✅
+👉 **Démo en ligne : [flaskgpt.onrender.com](https://flaskgpt-1dku.onrender.com/)**
 
 
 ---
