@@ -1,73 +1,83 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FlaskGPT</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
-
-    <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FlaskGPT</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
+  <style>
     body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background-image: url("{{ url_for('static', filename='img/flask.png') }}");
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    main {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end; /* ou center si tu veux que le input soit au centre verticalement */
-        padding-bottom: 4rem;
+    #gpt-output {
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
     }
-</style>
 
+    .message-bubble {
+      max-width: 75%;
+      padding: 10px 16px;
+      margin: 8px;
+      border-radius: 18px;
+      line-height: 1.5;
+    }
+
+    .user-message {
+      background-color: #cce5ff;
+      align-self: flex-end;
+    }
+
+    .bot-message {
+      background-color: #f1f1f1;
+      align-self: flex-start;
+    }
+
+    .message-container {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
 </head>
-<body>
 
-<div id="chat-template" class="hidden odd:bg-slate-50 even:bg-slate-200 p-6">
-    <p class="message"></p>
-</div>
+<body class="text-gray-900">
 
-<main class="mx-auto max-w-6xl px-4 py-10 flex flex-col">
-    <div id="gpt-output"></div>
-    <form id="prompt-form" class="fixed bottom-0 left-0 w-full z-10 px-4 bg-white/80 backdrop-blur-md">
-    <label for="prompt" class="sr-only">Prompt</label>
-    <div class="flex w-full max-w-6xl mx-auto">
+  <main class="flex flex-col justify-end items-center h-screen px-4 py-6">
+    <h1 class="text-4xl font-bold mb-6 text-white drop-shadow-lg">FlaskGPT</h1>
+    <div id="gpt-output" class="w-full max-w-3xl flex flex-col overflow-y-auto px-2 message-container"></div>
+
+    <form id="prompt-form" class="w-full max-w-3xl mt-4 px-2">
+      <div class="flex">
         <input
-            type="text"
-            name="prompt"
-            id="prompt"
-            class="flex-grow px-4 py-3 rounded-l-xl outline-none shadow-md"
-            placeholder="Send a message"
+          type="text"
+          name="prompt"
+          id="prompt"
+          class="flex-grow px-4 py-3 rounded-l-xl outline-none shadow-md bg-white text-black"
+          placeholder="Pose une question à FlaskGPT..."
         />
         <button
-            class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-r-xl shadow-md flex items-center justify-center"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-r-xl shadow-md flex items-center justify-center"
         >
-            <svg class="hidden" id="spinner-icon" width="24" height="24" fill="#fff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <style>.spinner_b2T7 { animation: spinner_xe7Q .8s linear infinite } .spinner_YRVV { animation-delay: -.65s } .spinner_c9oY { animation-delay: -.5s } @keyframes spinner_xe7Q { 93.75%, 100% { r: 3px } 46.875% { r: .2px } }</style>
-                <circle class="spinner_b2T7" cx="4" cy="12" r="3"/>
-                <circle class="spinner_b2T7 spinner_YRVV" cx="12" cy="12" r="3"/>
-                <circle class="spinner_b2T7 spinner_c9oY" cx="20" cy="12" r="3"/>
-            </svg>
-            <svg id="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" class="h-4 w-4 m-1 md:m-0" stroke-width="2">
-                <path d="M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z" fill="currentColor"></path>
-            </svg>
+          <svg class="hidden" id="spinner-icon" width="24" height="24" fill="#fff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle class="spinner_b2T7" cx="4" cy="12" r="3"/>
+            <circle class="spinner_b2T7 spinner_YRVV" cx="12" cy="12" r="3"/>
+            <circle class="spinner_b2T7 spinner_c9oY" cx="20" cy="12" r="3"/>
+          </svg>
+          <svg id="send-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" class="h-4 w-4 m-1 md:m-0" stroke-width="2">
+            <path d="M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z" fill="currentColor" />
+          </svg>
         </button>
-    </div>
-</form>
+      </div>
+    </form>
+  </main>
 
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-<script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+  <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

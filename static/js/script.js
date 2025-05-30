@@ -1,22 +1,28 @@
-function cloneAnswerBlock(){
+function addToLog(message, type = "bot") {
     const output = document.querySelector('#gpt-output');
-    const template = document.querySelector('#chat-template');
-    const clone = template.cloneNode(true);
-    clone.id = "";
-    output.appendChild(clone);
-    clone.classList.remove("hidden")
-    return clone.querySelector('.message');
+    const messageEl = document.createElement('div');
+    messageEl.classList.add('message-bubble', 'message');
+
+    if (type === "user") {
+        messageEl.classList.add('user-message');
+    } else {
+        messageEl.classList.add('bot-message');
+    }
+
+    messageEl.innerText = message;
+    output.appendChild(messageEl);
+    scrollToBottom();
+    return messageEl;
 }
 
-function addToLog(message){
-    const answerBlock = cloneAnswerBlock();
-    answerBlock.innerText = message;
-    return answerBlock;
+function scrollToBottom() {
+    const container = document.querySelector('#gpt-output');
+    container.scrollTop = container.scrollHeight;
 }
 
-function getChatHistory(){
-    const messageBlocks = document.querySelectorAll(".message:not(#chat-template .message)")
-    return Array.from(messageBlocks).map(block => block.innerHTML)
+function getChatHistory() {
+    const messages = document.querySelectorAll('#gpt-output .message');
+    return Array.from(messages).map(msg => msg.innerText.trim());
 }
 
 async function fetchPromptResponse(prompt) {
@@ -25,51 +31,62 @@ async function fetchPromptResponse(prompt) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({messages: getChatHistory()}),
+        body: JSON.stringify({ messages: getChatHistory() }),
     });
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Une erreur est survenue");
+    }
 
     return response.body.getReader();
 }
 
-async function readResponseChunks(reader, answerBlock) {
+async function readResponseChunks(reader, block) {
     const decoder = new TextDecoder();
     const converter = new showdown.Converter();
 
     let chunks = "";
     while (true) {
-        const {done, value} = await reader.read();
-        if (done) {
-            break;
-        }
+        const { done, value } = await reader.read();
+        if (done) break;
         chunks += decoder.decode(value);
-        answerBlock.innerHTML = converter.makeHtml(chunks);
+        block.innerHTML = converter.makeHtml(chunks);
+        scrollToBottom();
     }
 }
 
-document.addEventListener("DOMContentLoaded",() => {
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector('#prompt-form');
     const spinnerIcon = document.querySelector('#spinner-icon');
     const sendIcon = document.querySelector('#send-icon');
 
-    form.addEventListener("submit",async(event) => {
-        event.preventDefault()
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const prompt = form.elements.prompt.value.trim();
+        if (!prompt) return;
+
+        form.elements.prompt.value = "";
+
         spinnerIcon.classList.remove("hidden");
         sendIcon.classList.add("hidden");
 
-        const prompt = form.elements.prompt.value;
-        form.elements.prompt.value = "";
-        addToLog(prompt);
+        addToLog(prompt, "user");
 
         try {
-            const answerBlock = addToLog("GPT est en train de réfléchir...");
+            const answerBlock = addToLog("GPT est en train de réfléchir...", "bot");
             const reader = await fetchPromptResponse(prompt);
             await readResponseChunks(reader, answerBlock);
         } catch (error) {
-            console.error('Une erreur est survenue:', error);
+            const errorMessage = error.message || "Erreur inconnue";
+            const errorBlock = addToLog(errorMessage, "bot");
+            errorBlock.classList.add("text-red-600", "font-semibold");
         } finally {
             spinnerIcon.classList.add("hidden");
             sendIcon.classList.remove("hidden");
             hljs.highlightAll();
         }
-    })
+    });
 });
