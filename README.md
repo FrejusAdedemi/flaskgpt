@@ -13,8 +13,7 @@ Une mini app de chat en Python avec Flask + OpenAI (GPT-3.5)
 - Tailwind CSS (via CDN)
 - Render (pour le déploiement)
   
-👉 **Démo en ligne : [flaskgpt-1dku.onrender.com](https://flaskgpt-1dku.onrender.com)**  
-[![Live on Render](https://img.shields.io/badge/Live%20App-online-brightgreen?logo=render)](https://flaskgpt-1dku.onrender.com)
+🚀 [Voir la démo en ligne](https://flaskgpt-1dku.onrender.com)
 
 
 ---
